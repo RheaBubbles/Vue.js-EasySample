@@ -1,0 +1,528 @@
+<html>
+<head>
+<title>Vue.js</title>
+<script src="https://unpkg.com/vue"></script>
+<script src="node_modules/velocity-animate/velocity.min.js"></script>
+<script src="node_modules/velocity-animate/velocity.ui.min.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
+<link href="my-style.css" rel="stylesheet">
+</head>
+<body class="mdc-typography">
+<img src="head.jpg"/>
+<!-- Test v-on -->
+<div id="app1">
+    <div v-html="content">
+    </div>
+    <button v-on:click="changeH1(example)">Change?</button>
+</div>
+<script>
+    vm = new Vue({
+        el: "#app1",
+        data: {
+            example: "<h1>Use v-on!</h1>",
+            content: "<h1>Hello Vue!</h1>"
+        },
+        methods: {
+            changeH1(msg) {
+                this.content = msg;
+            }
+        }
+    });
+</script>
+<!-- Test hook fucntion-->
+<div id="app2">
+    <h1>
+        {{content}}
+    </h1>
+    <button v-on:click="updateContent()">Update?</button>
+    <button v-on:click="myDestroy()">Destroy?</button>
+</div>
+<script>
+    var i = 0;
+    vm2 = new Vue({
+        el: "#app2",
+        data: {
+            content: "Test hook functions"
+        },
+        beforeCreate: function() {
+            console.log("beforeCreate at No." + i++);
+            //"this" in hook function is the instance itself 
+        },
+        created: function() {
+            console.log("created at No." + i++);
+        },
+        beforeMount: function() {
+            console.log("beforeMount at No." + i++);
+        },
+        mounted: function() {
+            console.log("mounted at No." + i++);
+        },
+        updated: function() {
+            console.log("updated at No." + i++);
+        },
+        beforeUpdate: function() {
+            console.log("beforeUpdate at No." + i++);
+        },
+        beforeDestroy: function() {
+            console.log("beforeDestroy at No." + i++);
+        },
+        destroyed: function() {
+            console.log("destroyed at No." + i++);
+        },
+        methods: {
+            updateContent: function() {
+                vm2.content += "!";
+            },
+            myDestroy: function() {
+                vm2.content = "Instance Destroyed!";
+                setTimeout("vm2.$destroy();",100);
+                
+            }
+        }
+    });
+</script>
+<!-- Test v-if -->
+<div id="app3">
+    <h1 v-if="seen"> Now you see me </h1>
+    <button v-on:click="changeSeen()">{{seenText}}</button>
+</div>
+<script>
+    vm3 = new Vue({
+        el: "#app3",
+        data: {
+            seen: true,
+            seenText: "Seen?"
+        },
+        methods: {
+            changeSeen() {
+                if(this.seen) {
+                    this.seenText = "NotSeen?";
+                }
+                else {
+                    this.seenText = "Seen?";
+                }
+                this.seen = !this.seen;
+                
+            }
+        }
+    });
+</script>
+<!-- Test computed and watch -->
+<div id="app4">
+    <h1>
+        Computed vs Method
+    </h1>
+    <input v-model:value="message"/>
+    <p>Reversed: {{ reversedMessage }}</p>
+</div>
+<script>
+    vm4 = new Vue({
+        el: "#app4",
+        data: {
+            message: "Input text here!",
+        },
+        computed: {
+            reversedMessage: {
+                get: function() {
+                    return this.message.split("").reverse().join("");
+                },
+                set: function(newValue) {
+                    console.log("The msg now is: " + newValue);
+                    this.message = newValue;
+                }
+            }
+        },
+        methods: {
+            reversedMessageFunction: function() {
+                return this.message.split("").reverse().join("");
+            }
+        },
+        watch: {
+            message: function() {
+                console.log("The input is: " + this.message);
+            }
+        }
+    });
+</script>
+<!-- Test v-bind on Class and CSS -->
+<div id="app5">
+    <h1>Bind Class and CSS</h1>
+    <button v-on:click="changeClass()">Change Class!</button>
+    <!-- Method 1 use property in data -->
+    <div class="static" 
+         v-bind:class="{active: isActive, 'text-danger':hasError}">
+         Method 1
+    </div>
+    <!-- Method 2 use object property in data -->
+    <div class="static" 
+         v-bind:class="classObject">
+         Method 2
+    </div>
+    <!-- Method 3 use computed object-->
+    <div class="static" 
+         v-bind:class="computedClassObject">
+         Method 3
+    </div>
+    <!-- Method 4 use classArray -->
+    <div class="static" 
+         v-bind:class="[isActive ? activeClass : '', errorClass, {'active-another': isActive}]">
+        Method 4
+    </div>
+    <!-- Method 4 use classArray -->
+    <div v-bind:style="styleObject">
+        v-bind on CSS
+    </div>
+</div>
+<script>
+    vm5 = new Vue({
+        el: "#app5",
+        data: {
+            isActive:true,
+            hasError:false,
+            classObject: {
+                active: this.isActive,
+                'text-danger': this.hasError
+            },
+            activeClass: 'active',
+            errorClass: 'text-danger',
+            styleObject: {
+                color: '#41b783',
+                'font-size': '18px'
+            }
+        },
+        computed: {
+            computedClassObject: function() {
+                return {
+                    active: this.isActive,
+                    'text-danger': this.hasError
+                }
+            }
+        },
+        methods: {
+            changeClass: function() {
+                this.isActive = !this.isActive;
+            }
+        }
+    });
+</script>
+<!-- Test v-if v-else-if -v-else -->
+<div id="app6">
+    <h1>If & Else-if & Else</h1>
+    <button v-on:click="changeState()">Change state!</button>
+    <p>Now you see is state-{{state}}</p>
+    <template v-if="state == 1">
+        <h2>If</h2>
+    </template>
+    <template v-else-if="state == 2">
+        <h2>Else-if</h2>
+    </template>
+    <template v-else-if="state == 3">
+        <h2>Else-if</h2>
+    </template>
+    <template v-else>
+        <h2>Else</h2>
+    </template>
+</div>
+<script>
+    vm = new Vue({
+        el: "#app6",
+        data: {
+            state: 1
+        },
+        methods: {
+            changeState() {
+                this.state = (this.state)%4 + 1;
+            }
+        }
+    });
+</script>
+<!-- Test v-for -->
+<div id="app7">
+    <h1>Todos powered by v-for</h1>
+    <input v-model:value="input" v-bind:placeholder="init" @keyup.enter="addTodo()"/>
+    <transition-group name="list" tag="div" class="todo-list">
+        <div v-for="(todo,index) in todos" 
+            class="todo"
+            v-on:click ="deleteTodo(index)"
+            v-bind:key="todo.text">
+            {{todo.text}}
+        </div>
+    </transition-group>
+</div>
+</div>
+<script>
+    vm7 = new Vue({
+        el: "#app7",
+        data: {
+            init: "> Add todo here! <",
+            input: "",
+            todos: [
+                {text:'This is a todo list'},
+                {text:'You can add todo'},
+                {text:'Or click to delete it'}
+            ]
+        },
+        methods: {
+            addTodo() {
+                this.todos.push({ text: this.input });
+                this.input = "";
+            },
+            deleteTodo(index) {
+                this.todos.splice(index,1);
+            }
+        }
+    });
+</script>
+<!-- Test component -->
+<div id="app8">
+    <h1>It's a Component Todos!</h1>
+    <input v-model:value="input" v-bind:placeholder="init" @keyup.enter="addTodo()"/>
+    <transition-group name="list" tag="div" class="todo-list">
+        <div is="todo-item"
+            v-for="(todo,index) in todos" 
+            class="todo"
+            v-on:delete ="deleteTodo(index)"
+            v-bind="todo"
+            v-bind:key="todo.text">
+        </div>
+    </transition-group>
+</div>
+<script>
+    Vue.component('todo-item', {
+        props: {
+            text: {
+                type: String
+            }
+        },
+        template: '<div v-on:click="deleteMe">{{text}}</div>',
+        methods: {
+            deleteMe: function() {
+                this.$emit('delete');
+            }
+        }
+        /* data in component should be a function which return a object */
+    });
+
+    // or you can register component locally like below
+    // var todoComponent = {template:'...'};
+    // and announce components object in vue instance
+    // such as components: { 'todo-item':todoComponent }
+
+    vm8 = new Vue({
+        el: "#app8",
+        data: {
+            init: "> Add todo here! <",
+            input: "",
+            todos: [
+                {text:'A todo use component'},
+                {text:'You can add todo'},
+                {text:'Or click to delete it'}
+            ]
+        },
+        methods: {
+            addTodo() {
+                this.todos.push({ text: this.input });
+                this.input = "";
+            },
+            deleteTodo(index) {
+                this.todos.splice(index,1);
+            }
+        }
+    });
+</script>
+<!-- Test slot -->
+<div id="app9">
+    <app-layout>
+        <h1 slot="header">This is a header slot!</h1>
+        <p>This is a slot for no name.</p>
+        <p slot="footer">This is a footer slot.</p>
+    </app-layout>
+</div>
+<script>
+    var layout = {
+        template: "<div class=\"container\">" + 
+        "<header>" +
+        "<slot name=\"header\"></slot>" +
+        "</header>" +
+        "<main>" +
+        "<slot></slot>" +
+        "<slot name=\"sth\">No solt,so you can see me.</slot>" +
+        "</main>" +
+        "<footer>" +
+        "<slot name=\"footer\"></slot>" +
+        "</footer>" +
+        "</div>"
+    };
+
+    // you can register component locally like below
+    // var todoComponent = {template:'...'};
+    // and announce components object in vue instance
+    // such as components: { 'todo-item':todoComponent }
+
+    vm9 = new Vue({
+        el: "#app9",
+        data: {
+        },
+        methods: {
+        },
+        components: {
+            'app-layout': layout
+        }
+    });
+</script>
+<!-- Test dynamic component -->
+<div id="app10">
+    <keep-alive>
+        <transition name="title-fade" mode="out-in">
+            <component v-bind:is="currentView"></component>
+        </transition>
+    </keep-alive>
+    <tab-button 
+        v-for="tab in tabs" 
+        v-bind="tab"
+        v-on:change="changePage(tab.id)"
+        v-bind:key="tab.id">
+    </tab-button>
+</div>
+<script>
+    var tabButton = {
+        props: {
+            id: {
+                type: Number
+            },
+            name: {
+                type: String
+            }
+        },
+        template: "<button v-on:click='changeTrigger'>{{name}}</button>",
+        methods: {
+            changeTrigger: function() {
+                this.$emit('change');
+            }
+        }
+    }
+    var home = {
+        template: "<h1>Home page!</h1>",
+    };
+    var posts = {
+        template: "<h1>Posts page!</h1>"
+    };
+    var archive = {
+        template: "<h1>Archive page!</h1>"
+    };
+    var back = {
+        template: "<h1>Dynamic Components</h1>",
+    };
+
+    vm10 = new Vue({
+        el: "#app10",
+        data: {
+            currentView: 'back',
+            tabs: [
+                {id: 0, name: 'home'},
+                {id: 1, name: 'posts'},
+                {id: 2, name: 'archive'},
+                {id: 3, name: 'back'},
+            ]
+        },
+        methods: {
+            changePage: function(id) {
+                this.currentView = this.tabs[id].name;
+            }
+        },
+        components: {
+            'home': home,
+            'posts': posts,
+            'archive': archive,
+            'back': back,
+            'tab-button': tabButton
+        }
+    });
+</script>
+<!-- Test Transition -->
+<div id="app11">
+    <h1>Vue Transition!</h1>
+    <button v-on:click="changeSeen">Click Me</button>
+    <transition name="fade">
+        <p v-show="show">This use css transition</p>
+    </transition>
+    <transition 
+        v-on:before-enter="beforeEnter"
+        v-on:enter="enter"
+        v-on:after-enter="afterEnter"
+        v-on:enter-cancelled="enterCancelled"
+
+        v-on:before-leave="beforeLeave"
+        v-on:leave="leave"
+        v-on:after-leave="afterLeave"
+        v-on:leave-cancelled="leaveCancelled">
+        <p v-if="show">This use hook functions</p>
+    </transition>
+</div>
+<script>
+    vm11 = new Vue({
+        el: "#app11",
+        data: {
+            show: true
+        },
+        methods: {
+            changeSeen: function() {
+                this.show = !this.show;
+            },
+            //Hook Function called in el transition
+            beforeEnter: function(el) {
+                el.style.opacity = 0;
+                el.style.display = 'block';
+                console.log("beforeEnter");
+            },
+            enter: function(el, done) {
+                Velocity(el, { opacity: 1}, {duration: 500 }, { complete: done });
+                console.log("enter");
+            },
+            afterEnter: function(el) {
+                console.log("afterEnter");
+            },
+            enterCancelled: function(el) {
+                console.log("enterCancelled");
+            },
+            beforeLeave: function(el) {
+                console.log("beforeLeave");
+            },
+            // 此回调函数是可选项的设置
+            // 与 CSS 结合时使用
+            leave: function(el,done) {
+                Velocity(el, { opacity: 0 }, {duration: 500 }, { complete: done });
+                console.log("leave");
+            },
+            afterLeave: function(el) {
+                el.style.opacity = 0;
+                el.style.display = 'none';
+                console.log("afterLeave");
+            },
+            // leaveCancelled 只用于 v-show 中
+            leaveCancelled: function(el) {
+                console.log("leaveCancelled");
+            },
+        }
+    });
+</script>
+<!-- Test Velocity.js -->
+<div id="app12">
+    <h1>Awesome Velocity</h1>
+</div>
+<script>
+    vm12 = new Vue({
+        el: "#app12",
+        data: {
+            
+        },
+        methods: {
+            
+        },
+        components: {
+            
+        }
+    });
+</script>
+</body>
+</html>

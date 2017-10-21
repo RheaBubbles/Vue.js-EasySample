@@ -1,0 +1,96 @@
+body {
+    text-align: center;
+    color: #34495e;
+}
+h1 {
+    font-weight: lighter;
+    border-bottom: 2px solid #41b783;
+    width: max-content;
+    margin: auto;
+    padding-top: 20px;
+}
+button {
+    padding: 10px 15px 10px 15px;
+    background: white;
+    border: none;
+    outline: none;
+    transition: all 400ms;
+    font-size: 16px;
+    font-weight: bolder;
+    color: #41b783;
+}
+button:hover {
+    background-color: #41b783;
+    color: white;
+}
+input {
+    padding: 10px;
+    outline: none;
+    border: none;
+    transition: all 400ms;
+    font-size: 20px;
+    text-align: center;
+    color: #34495e;
+}
+input:hover {
+    background-color: #41b783;
+    color: white;
+}
+input:focus {
+    background-color: #41b783;
+    color: white;
+}
+input::-webkit-input-placeholder {
+    transition: all 400ms;
+}
+input:hover::-webkit-input-placeholder, input:focus::-webkit-input-placeholder{
+    color: white;
+}
+.active {
+    color: #41b783;
+}
+.todo-list {
+    width: 263px;
+    height: auto;
+    margin: auto;
+}
+
+.todo {
+    width: 243px;
+    font-size: 16px;
+    padding: 10px;
+    transition: all 400ms;
+    cursor: pointer;
+}
+.todo:hover {
+    background-color: #41b783;
+    color: white;
+}
+
+/* below for transition  */
+
+.fade-enter-active, .fade-leave-active {
+    transition: all .5s
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active in below version 2.1.8 */ {
+    opacity: 0;
+}
+
+.title-fade-enter-active, .title-fade-leave-active {
+    transition: opacity .3s ease;
+  }
+.title-fade-enter, .title-fade-leave-to
+  /* .component-fade-leave-active for below version 2.1.8 */ {
+    opacity: 0;
+}
+
+.list-enter-active {
+}
+.list-leave-active {
+    position: absolute;
+}
+
+.list-enter, .list-leave-to
+/* .list-leave-active for below version 2.1.8 */ {
+    opacity: 0;
+}
